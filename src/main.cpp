@@ -384,7 +384,7 @@ struct cpu_t {
             case JMP: {
                 if (length == 1) {
                     int jumpLabelIdx = stream->read_int32();
-                    if (jumpLabelIdx>= 0 && jumpLabelIdx <= (this->info->program_counter_higher_bound - this->info->program_counter_lower_bound)) {
+                    if (jumpLabelIdx >= 0 && jumpLabelIdx <= (this->info->program_counter_higher_bound - this->info->program_counter_lower_bound)) {
                         stream->position = jumpLabelIdx;
                     }
                 }

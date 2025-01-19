@@ -41,3 +41,62 @@ void* get_operand_from_hex(char* str) {
 
     return operand;
 }
+
+// "hello, world!"
+void* get_operand_from_string(char* str) {
+    if (str == NULL || *str == '\0') {
+        return NULL;
+    }
+    
+    size_t len = strlen(str);
+    if (str[0] == '"' && str[len-1] == '"') {
+        str[len-1] = '\0';
+        str++;
+    }
+    
+    char* operand = (char*)malloc(strlen(str) + 1);
+    strcpy(operand, str);
+    return operand;
+}
+
+// %eax
+void* get_operand_from_register(char* str) {
+    int* operand = (int*)malloc(sizeof(int));
+    memset(operand, 0, sizeof(int));
+    
+    if (str[0] == '%') str++;
+
+    if (strcmp(str, "eax") == 0) *operand = 0;
+    else if (strcmp(str, "ebx") == 0) *operand = 1;
+    else if (strcmp(str, "ecx") == 0) *operand = 2;
+    else if (strcmp(str, "edx") == 0) *operand = 3;
+    else *operand = -1;
+    
+    return operand;
+}
+
+// [eax]
+void* get_operand_from_memory(char* str) {
+    int* operand = (int*)malloc(sizeof(int));
+    memset(operand, 0, sizeof(int));
+    
+    str++;
+    str[strlen(str)-1] = '\0';
+    void* reg = get_operand_from_register(str);
+    *operand = *(int*)reg;
+    free(reg);
+    
+    return operand;
+}
+
+void* get_operand_from_auto(char* str) {
+    if (str[0] == '"') {
+        return get_operand_from_string(str);
+    } else if (str[0] == '[') {
+        return get_operand_from_memory(str);
+    } else if (str[0] == '%' || isalpha(str[0])) {
+        return get_operand_from_register(str);
+    } else if ((str[0] == '0' && (str[1] == 'x' || str[1] == 'X')) || str[strlen(str) - 1] == 'h') {
+        return get_operand_from_hex(str);
+    } else return get_operand_from_int(str);
+}

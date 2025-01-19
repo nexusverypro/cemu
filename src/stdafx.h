@@ -13,4 +13,7 @@
 #include <stdio.h>
 #include <string.h>
 
+#define IN(type) type
+#define OUT(type) type##*
+
 #endif // __STDAFX_H__
